@@ -114,8 +114,8 @@ form.addEventListener("submit", async (e) => {
     group
   });
 
-  showPopup("✅ Successfully  Joined Group";
-
+  showPopup("✅ Successfully  Joined Group");
+  
   form.reset();
   loadGroups();
 });
