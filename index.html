@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Computer Science Igbo Grouping</title>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <h1>COMPUTER SCIENCE IGBO121 GROUPING</h1>
+    <p>Select a group and fill your details. Each group has a maximum of 30 students.</p>
+  </header>
+
+  <!-- FORM -->
+  <div class="container">
+    <form id="groupForm">
+
+      <input type="text" id="name" placeholder="Full Name" required />
+
+      <input type="tel" id="phone" placeholder="WhatsApp Number" required />
+
+      <!-- Matric -->
+      <div class="matric-box">
+        <span>MOUAU/CMP/</span>
+        <input type="text" id="matric" placeholder="25/000000" required />
+      </div>
+
+      <!-- GROUP -->
+      <select id="groupSelect" required>
+        <option value="">Select Group</option>
+      </select>
+
+      <button type="submit" id="submitBtn">Join Group</button>
+
+    </form>
+  </div>
+
+  <!-- POPUP MODAL -->
+  <div id="popup" class="popup">
+    <div class="popup-content">
+      <p id="popupText"></p>
+      <button onclick="closePopup()">OK</button>
+    </div>
+  </div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
