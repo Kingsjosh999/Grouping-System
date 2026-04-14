@@ -49,6 +49,7 @@ const groups = [
 ];
 
 const groupSelect = document.getElementById("groupSelect");
+const submitBtn = document.getElementById("submitBtn");
 
 /* LOAD GROUPS WITH COUNTS */
 async function loadGroups() {
@@ -81,6 +82,9 @@ const form = document.getElementById("groupForm");
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
+  submitBtn.disabled = true;
+  submitBtn.innerText = "Submitting...";
+
   const name = document.getElementById("name").value;
   const phone = document.getElementById("phone").value;
   const matricInput = document.getElementById("matric").value;
@@ -88,36 +92,59 @@ form.addEventListener("submit", async (e) => {
 
   const matric = `MOUAU/CMP/${matricInput}`;
 
-  /* CHECK DUPLICATE */
-  const q = query(collection(db, "students"), where("matric", "==", matric));
-  const snap = await getDocs(q);
-
-  if (!snap.empty) {
-    showPopup("❌ You already registered");
+  if (!group) {
+    showPopup("❌ Please select a group");
+    submitBtn.disabled = false;
+    submitBtn.innerText = "Join Group";
     return;
   }
 
-  /* CHECK GROUP LIMIT */
-  const gq = query(collection(db, "students"), where("group", "==", group));
-  const gsnap = await getDocs(gq);
+  try {
+    /* 🔄 REFRESH GROUP COUNT */
+    await loadGroups();
 
-  if (gsnap.size >= 30) {
-    showPopup("❌ Please select another group");
-    return;
+    /* CHECK DUPLICATE */
+    const q = query(collection(db, "students"), where("matric", "==", matric));
+    const snap = await getDocs(q);
+
+    if (!snap.empty) {
+      showPopup("❌ You already registered");
+      submitBtn.disabled = false;
+      submitBtn.innerText = "Join Group";
+      return;
+    }
+
+    /* CHECK GROUP LIMIT */
+    const gq = query(collection(db, "students"), where("group", "==", group));
+    const gsnap = await getDocs(gq);
+
+    if (gsnap.size >= 30) {
+      showPopup("❌ Please select another group");
+      submitBtn.disabled = false;
+      submitBtn.innerText = "Join Group";
+      return;
+    }
+
+    /* SAVE DATA */
+    await addDoc(collection(db, "students"), {
+      name,
+      phone,
+      matric,
+      group
+    });
+
+    showPopup("✅ Successfully Joined Group");
+
+    form.reset();
+    loadGroups();
+
+  } catch (error) {
+    console.error(error);
+    showPopup("❌ Something went wrong. Try again.");
   }
 
-  /* SAVE DATA */
-  await addDoc(collection(db, "students"), {
-    name,
-    phone,
-    matric,
-    group
-  });
-
-  showPopup("✅ Successfully  Joined Group");
-  
-  form.reset();
-  loadGroups();
+  submitBtn.disabled = false;
+  submitBtn.innerText = "Join Group";
 });
 
 /* POPUP */
